@@ -3,6 +3,7 @@ from cryptography.hazmat.primitives.ciphers.algorithms import AES256
 from cryptography.hazmat.primitives.ciphers.modes import CBC
 from cryptography.hazmat.primitives.serialization import load_pem_parameters
 from cryptography.hazmat.primitives.asymmetric import dh
+from cryptography.hazmat.primitives import padding
 import base64
 
 
@@ -22,7 +23,7 @@ def get_private_key(params_numbers: dh.DHParameterNumbers, file_pub: str, file_p
 
 def get_bytes_file(file: str) -> bytes:
     with open(file, 'rb') as f:
-        return f.read()
+        return base64.decodebytes(f.read())
 
 
 with open("data/dhpar.pem", 'rb') as file:
@@ -37,4 +38,6 @@ with open("data/dhpar.pem", 'rb') as file:
     decryptor = cipher.decryptor()
     bytes_file = get_bytes_file("ciphertext.b64")
     message = decryptor.update(bytes_file) + decryptor.finalize()
-    print(f"Message is: {message}")
+    unpadding = padding.PKCS7(128).unpadder()
+    message_without_padding = unpadding.update(message) + unpadding.finalize()
+    print(f"Message is: {message_without_padding.decode('utf-8')}")
