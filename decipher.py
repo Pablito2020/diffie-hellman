@@ -5,6 +5,7 @@ from cryptography.hazmat.primitives.serialization import load_pem_parameters
 from cryptography.hazmat.primitives.asymmetric import dh
 from cryptography.hazmat.primitives import padding
 import base64
+import argparse
 
 
 def get_public_key(params_numbers: dh.DHParameterNumbers, file: str) -> dh.DHPublicKey:
@@ -26,18 +27,40 @@ def get_bytes_file(file: str) -> bytes:
         return base64.decodebytes(f.read())
 
 
-with open("data/dhpar.pem", 'rb') as file:
-    parameters: dh.DHParameters = load_pem_parameters(file.read())
-    params_numbers = parameters.parameter_numbers()
+def decypher_data(pem: str, my_public_key: str, my_private_key: str, other_public_key: str, message_file: str):
+    with open(pem, 'rb') as file:
+        parameters: dh.DHParameters = load_pem_parameters(file.read())
+        params_numbers = parameters.parameter_numbers()
 
-    my_private_key: dh.DHPrivateKey = get_private_key(params_numbers, "public_key.asc", "private_key.asc")
-    public_key_cesar: dh.DHPublicKey = get_public_key(params_numbers, "old_public_key.asc")
-    shared_key = my_private_key.exchange(public_key_cesar)
+        private_key: dh.DHPrivateKey = get_private_key(params_numbers, my_public_key, my_private_key)
+        public_key_other: dh.DHPublicKey = get_public_key(params_numbers, other_public_key)
+        shared_key = private_key.exchange(public_key_other)
 
-    cipher = Cipher(algorithm=AES256(shared_key[:32]), mode=CBC(bytearray(16)))
-    decryptor = cipher.decryptor()
-    bytes_file = get_bytes_file("ciphertext.b64")
-    message = decryptor.update(bytes_file) + decryptor.finalize()
-    unpadding = padding.PKCS7(128).unpadder()
-    message_without_padding = unpadding.update(message) + unpadding.finalize()
-    print(f"Message is: {message_without_padding.decode('utf-8')}")
+        cipher = Cipher(algorithm=AES256(shared_key[:32]), mode=CBC(bytearray(16)))
+        decryptor = cipher.decryptor()
+        bytes_file = get_bytes_file(message_file)
+        message = decryptor.update(bytes_file) + decryptor.finalize()
+        unpadding = padding.PKCS7(128).unpadder()
+        message_without_padding = unpadding.update(message) + unpadding.finalize()
+        print(f"Message is: {message_without_padding.decode('utf-8')}")
+
+
+if __name__ == "__main__":
+    # Argument Parser
+    parser = argparse.ArgumentParser(prog='cipher.py', description='Cipher a message using the session key')
+    parser.add_argument('-p', '--pem')
+    parser.add_argument('-mprvk', '--my-private-key')
+    parser.add_argument('-mpubk', '--my-public-key')
+    parser.add_argument('-opubk', '--other-public-key')
+    parser.add_argument('-f', '--message-file')
+    args = parser.parse_args()
+
+    # Default values of arguments
+    pem_file = args.pem if args.pem else "data/dhpar.pem"
+    my_private_key_file = args.my_private_key if args.my_private_key else "private_key.asc"
+    my_public_key_file = args.my_public_key if args.my_public_key else "public_key.asc"
+    other_public_key_file = args.other_public_key if args.other_public_key else "old_public_key.asc"
+    message_file = args.message_file if args.message_file else "ciphertext.b64"
+
+    # Cipher
+    decypher_data(pem_file, my_public_key_file, my_private_key_file, other_public_key_file, message_file)

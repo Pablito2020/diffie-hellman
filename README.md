@@ -7,6 +7,7 @@ Diffie Hellman Key Exchange with OpenSSL 🔑
 - [Create your public and private key](#create-your-public-and-private-key-)
 - [Cipher a file with your public key](#cipher-a-message-using-the-session-key-)
 - [Decipher a file with your private key and the other public key](#decipher-the-message-using-the-session-key-)
+- [Running the tests](#running-the-tests-)
 
 ## Set up 📦
 
@@ -50,4 +51,18 @@ The session key is generated from:
 Knowing this, execute:
 ```
     $ python decipher.py
+```
+
+## Running the tests 🧪
+I've made one test that does the following:
+- Generates private and public keys for A
+- Generates private and public keys for B
+- Ciphers a message from A and saves it to a file.
+- B deciphers the message from A.
+- Assert that the message is the same.
+
+For running this test execute:
+
+```
+    $ ./test/run.sh
 ```
