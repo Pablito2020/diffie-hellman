@@ -4,9 +4,10 @@ Diffie Hellman Key Exchange with OpenSSL 🔑
 
 ## Summary
 - [Set Up](#set-up-)
+- [Files](#files-)
 - [Create your public and private key](#create-your-public-and-private-key-)
-- [Cipher a file with your public key](#cipher-a-message-using-the-session-key-)
-- [Decipher a file with your private key and the other public key](#decipher-the-message-using-the-session-key-)
+- [Cipher a message with the session key](#cipher-a-message-using-the-session-key-)
+- [Decipher a message with the session key](#decipher-the-message-using-the-session-key-)
 - [Running the tests](#running-the-tests-)
 
 ## Set up 📦
@@ -24,6 +25,11 @@ Diffie Hellman Key Exchange with OpenSSL 🔑
 ```
     $ pip install -r requirements.txt
 ```
+
+## Files 📁
+The assignment specifies that the following files must be submitted:
+- pubB.asc (it's inside data/pubB.asc)
+- ciphertext.b64 (it's inside data/ciphertext.b64)
 
 ## Create your public and private key 🔑
 For generating a public and private key, execute the following command:
@@ -43,7 +49,7 @@ Knowing this, execute:
     $ python cipher.py
 ```
 
-## Decipher the message using the session key🔓
+## Decipher the message using the session key 🔓
 The session key is generated from:
 - Your private key (which in the cryptography library needs your public key for recreating the DHPrivateKey object).
 - The other entity public key.
