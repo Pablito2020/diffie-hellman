@@ -36,6 +36,6 @@ if __name__ == "__main__":
 
     # Generate keys
     pem_file = args.pem if args.pem else "data/dhpar.pem"
-    private_key_file = args.output_private_key if args.output_private_key else "private_key.asc"
-    public_key_file = args.output_public_key if args.output_public_key else "public_key.asc"
+    private_key_file = args.output_private_key if args.output_private_key else "privB.asc"
+    public_key_file = args.output_public_key if args.output_public_key else "pubB.asc"
     create_keys(pem_file, private_key_file, public_key_file)

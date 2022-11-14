@@ -59,8 +59,8 @@ if __name__ == "__main__":
 
     # Default values of arguments
     pem_file = args.pem if args.pem else "data/dhpar.pem"
-    my_private_key_file = args.my_private_key if args.my_private_key else "old_private_key.asc"
-    my_public_key_file = args.my_public_key if args.my_public_key else "old_public_key.asc"
+    my_private_key_file = args.my_private_key if args.my_private_key else "privB.asc"
+    my_public_key_file = args.my_public_key if args.my_public_key else "pubB.asc"
     other_public_key_file = args.other_public_key if args.other_public_key else "data/pubA.asc"
     message = args.message if args.message else "Pablo Fraile Alonso"
     output = args.output if args.output else "ciphertext.b64"
